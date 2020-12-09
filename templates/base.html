@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!--https://github.com/joshbuchea/HEAD-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+    
+    <header>
+      <a class="home-link" href="/">
+      <h1>The<br>
+         AlbumSearcher</h1>
+      </a>
+    </header>
+    
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+      <p>© Zohar Yamin<br> 
+      <a href='https://github.com/zohary89/albumsearcher-db' target="_blank">GitHub</a></p>
+      <p>Powered by <a href="https://www.theaudiodb.com/" target="_blank">'TheAudioDB'</a></p>
+    </footer>
+
+  </body>
+</html>

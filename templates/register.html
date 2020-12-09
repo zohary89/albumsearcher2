@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+
+    <div>
+        <h2>Register</h2>
+    </div>
+  
+    <div>
+        <p class="regist-info">Welcome to the albumsearcher. To get a profile page with your favorite albums: </p>
+    </div>
+    <div>
+        <form action='/register' method="POST" class="row index">
+            <div class="col-auto">
+                <div class="input">
+                    <label for="user-name">Username</label>
+                    <input class="form-control" id="user-name" name="user-name" type="text" placeholder="Enter username" tabindex="1" autofocus required>
+                </div>
+                {% if user_exist %}
+                <div class="connect_failed">
+                  <p>The user exist. choose another name</p>
+                </div>
+                {% endif %}
+
+                <div class="input">
+                    <label for="psw">password</label>
+                    <input class="form-control" id="psw" name="psw" type="password" placeholder="Enter Password" tabindex="1" required>
+                </div>
+
+                <div class="input">
+                    <label for="name">Name</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Enter your name" tabindex="1" required>
+                </div>
+
+                <div class="input">
+                    <label for="birthday">Birthdate</label>
+                    <input class="form-control" id="birthday" name="birthday" type="date" placeholder="Enter your birthdate" tabindex="1" required>
+                </div>
+
+                <div class="input">
+                    <label for="country">Country</label>
+                    <input class="form-control" id="country" name="country" type="text" placeholder="Enter your country" tabindex="1" required>
+                </div>
+
+            </div>
+            <div class="login">
+                <button class="form-control, btn btn-primary" id="registerbtn" type="submit" tabindex="2">Register</button> 
+            </div>
+        </form>
+        <div>
+            <p class="register-now" style='font-size:small'>Already have an acount? <a href="/connect-page">Login here</a></p>
+        </div>
+    </div>
+
+{% endblock %}

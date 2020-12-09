@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Album info{% endblock %}
+
+{% block content %}
+
+<h2>{{ album_info.strAlbum }}/ {{ album_info.strArtist }}</h2>
+
+<div>
+  <p class="info">* If you liked this album, please click here for LIKE :)</p>
+</div>
+
+<div class=tracks_cover>
+  <div id="album_tracks">
+    <h3>Album Tracks:</h3>
+    <ol>
+      {% for track in tracks_info %}
+      <li>{{ track.strTrack }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <div>
+    {% if album_info.strAlbumThumb is none or album_info.strAlbumThumb  == ""  %}
+      <img class="cover-photo" src="/static/images/no-image-icon-23500.jpg" alt="No image available">
+    {% else %}
+      <img class="cover-photo" src="{{ album_info.strAlbumThumb }}" alt="album cover">
+    {% endif %}
+  </div> 
+  
+  <div class=like-logo>
+    {% if like %}
+    <form action="/unlike" method="post">
+      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
+      <input class="like-big-image" type="image" title="unlike" name="unlike" src="/static/images/heart.png" alt="UnLike">
+    </form> 
+    {% else %}
+    <form action="/like" method="post">
+      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
+      <input class="like-big-image" type="image" title="like" name="like" src="/static/images/unlike.png" alt="Like">
+    </form> 
+    {% endif %}
+    <p class='total-likes'>Total likes: {{ total_likes }}</p>
+  </div>
+</div>
+
+<div id="album_description">
+  <h3>Album Description:</h3>
+  {% if 'strDescriptionEN' not in album_info %}
+  <p>No descrioption available</p>
+  {% elif album_info.strDescriptionEN is none or album_info.strDescriptionEN == ""  %}
+  <p>No descrioption available</p>
+  {% else %}
+  <p>{{ album_info.strDescriptionEN }}</p>
+  {% endif %}
+</div>
+
+<div style='margin-top: 2em'>
+  <a class='btn btn-primary btn-lg' href="/albums?artist={{ album_info.strArtist }}" role="button">Back to {{ album_info.strArtist }} albums</a>
+</div>
+
+{% endblock %}

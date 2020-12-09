@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Update profile{% endblock %}
+
+{% block content %}
+
+    <h2 class="connect">User Details</h2>
+
+    <p style='text-align: center;'>Update one or more fields:</p>
+    <div>
+        <form action="/update" method="POST" class="row index">
+            <div class="col-auto">
+                <div class='input'>
+                    <label for="user-name">Username</label>
+                    <input class="form-control" id="user-name" name="user-name" type="text" value="{{ g.user.username }}" tabindex="1" required>
+                </div>
+
+                {% if user_exist %}
+                <div class="connect_failed">
+                    <p>User-name exist. Choose another one</p>
+                </div>
+                {% endif %}
+                
+                <div class="input">
+                    <label for="name">Name</label>
+                    <input class="form-control" id="name" name="name" type="text" value="{{ g.user.name }}" tabindex="1" required>
+                </div>
+
+                <div class="input">
+                    <label for="birthday">Birthdate</label>
+                    <input class="form-control" id="birthday" name="birthday" type="date" value="{{ g.user.birthday }}" tabindex="1" required>
+                </div>
+
+                <div class="input">
+                    <label for="country">Country</label>
+                    <input class="form-control" id="country" name="country" type="text" value="{{ g.user.country }}" tabindex="1" required>
+                </div>
+
+            </div>
+            <div class="login">
+                <button class="form-control, btn btn-primary" id="update" type="submit" tabindex="2">Update</button> 
+            </div>
+        </form>
+  
+
+{% endblock %}

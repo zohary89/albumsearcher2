@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Connect{% endblock %}
+
+{% block content %}
+
+    <h2 class="connect">Login</h2>
+
+    <div>
+        <form action="/connect" method="POST" class="row index">
+            <div class="col-auto">
+                <div class='input'>
+                    <label for="user-name">Username</label>
+                    <input class="form-control" id="user-name" name="user-name" type="text" placeholder="Enter username" tabindex="1" autofocus required>
+                </div>
+
+                <div class='input'>
+                    <label for="psw">password</label>
+                    <input class="form-control" id="psw" name="psw" type="password" placeholder="Enter Password" tabindex="1" required>
+                </div>
+
+                {% if login_failed %}
+                <div class="connect_failed">
+                    <p>Login_failed, Try again</p>
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="login">
+                <button class="form-control, btn btn-primary" id="registerbtn" type="submit" tabindex="2">Login</button> 
+            </div>
+        </form>
+  
+        <div>
+            <p class="register-now" style='font-size:small'>Don't have an account? <a href="/register-page">Register here</a></p>
+        </div>
+    </div>
+
+{% endblock %}

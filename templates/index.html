@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Search albums{% endblock %}
+
+{% block content %}
+
+  <div id="connect-line">
+    <div class="hallo">
+      <p>Hello {{ g.user.name }}</p>
+    </div>
+    <div>
+        <a class='btn btn-primary' href="/update" role="button" style='font-size: small'>Edit profile</a>
+        <a class='btn btn-primary' href="/connect-page" role="button" style='font-size: small'>Log out</a>
+    </div>
+  </div>
+
+  <div id="description">
+    <p>Who is your favorite music artist or band?<br>
+        Do you want to see all of his albums?<br>
+      For your artist's discography- from the newest to the oldest,<br>
+      you just need to write his name. </p>
+  </div>
+
+  <div id="search">
+    <form method="GET" action="/albums" class="row index">
+      <label for="input-artist" class="visually-hidden">Search artist >>> </label>
+      <div class="col-auto">
+        <input class="form-control" id="input-artist" name="artist" type="text" placeholder="Search artist" tabindex="1" autofocus required>
+      </div>
+      <div class="col-auto">
+        <button class="form-control, btn btn-primary" type="submit" tabindex="2">Search</button> 
+      </div>
+    </form>
+    {% if not is_valid_artist %}
+    <div class="error">
+      <p>Artist not available</p>
+    </div>
+    {% endif %}
+    <div class='favorites-button', style="text-align: center">
+      <a class='btn btn-primary' href="/favorites" role="button">My Profile Page</a>
+    </div>
+  </div>
+
+
+  <h2>Top 10 Liked Albums:</h2>
+  <div id="albums">
+    {% for album in top_rated_albums %}
+      <div class="album" style="width: 150px;">
+        <a href="/albums/{{ album[0].album_id }}">
+        {% if album.strAlbumThumb is none or album.strAlbumThumb == ""  %}
+          <img class="album-photo" src="static/images/no-image-icon-23500.jpg" alt="No image available">
+        {% else %}
+          <img class="album-photo" src="{{ album[0].image_path }}" alt="{{ album[0].album_name }} - image">
+        {% endif %}
+        </a>
+        <div class="album-details" style='font-size: small;'>
+          <ul> 
+            <li class="album-name">{{ album[0].album_name }}/ {{ album[0].artist }}</li>
+            <li class="album-likes">Likes: {{ album[1] }} <img class='like-image' src="/static/images/heart.png" alt="Like"></li>
+          </ul>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+

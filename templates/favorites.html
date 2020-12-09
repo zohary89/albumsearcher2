@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Favorites page{% endblock %}
+
+{% block content %}
+
+
+<h2>{{ g.user.name }}'s Profile</h2>
+
+<div class="details">
+<h3>My details:</h3>
+<h4>{{ g.user.username }}</h4>
+<ul>
+    <li>My name: {{ g.user.name }}</li>
+    <li>Birthday: {{ g.user.birthday }}</li>
+    <li >{{ g.user.country }}</li>
+</ul>
+</div>
+<a class='btn btn-primary' href="/update" role="button" style='font-size: small'>Edit profile</a>
+
+
+<h3 style="text-align: center; margin: 2em;">My Favorites Albums</h3>
+{% if not favorites %}
+<p style="text-align: center;">You haven't selected your favorite albums yet,<br>
+    select an artist, click on one of his albums,
+    and give it a LIKE!</p>
+
+<div class="arrow">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div id="search">
+    <form method="GET" action="/albums" class="row index index-favoriets">
+        <label for="input-artist" class="visually-hidden">Search artist >>> </label>
+        <div class="col-auto">
+            <input class="form-control" id="input-artist" name="artist" type="text" placeholder="Search artist" tabindex="1" required>
+        </div>
+        <div class="col-auto">
+            <button class="form-control, btn btn-primary" id="search-button" type="submit" tabindex="2">Search</button> 
+        </div>
+    </form>
+</div>
+
+{% else %}
+<h4>Total likes albums: {{ likes }}</h4>
+<p style="font-size: small;">(from the last to the first like)</p>
+<table class="table table-striped table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Album Name</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Year</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Album cover</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for album in favorites %}
+        <tr>
+            <th scope="row"><a class='favorite-name' href="/albums/{{ album.album_id }}">{{ album.album_name }}</a></th>
+            <td>{{ album.artist }}</td>
+            {% if album.year == '0' %}
+            <td> - <td>
+            {% else %}
+            <td>{{ album.year }}</td>
+            {% endif %}
+            {% if album.rate is none %}
+            <td> - </td>
+            {% else %}
+            <td> {{ album.rate}} </td>
+            {% endif %}
+            {% if album.image_path is none or album.image_path == ""  %}
+            <td><img class="small-album" src="/static/images/no-image-icon-23500.jpg" alt="No image">
+            </td>
+            {% else %}
+            <td><img style='width: 3em' src="{{ album.image_path}}" alt="No image">
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% endblock %}
+
+

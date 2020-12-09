@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Albums results{% endblock %}
+
+{% block content %}
+  <div id="search">
+    <form method="GET" action="/albums" class="row results">
+      <label for="input-artist" class="visually-hidden">Search artist >>> </label>
+      <div class="col-auto">
+        <input class="form-control" id="input-artist" name="artist" type="text" placeholder="Search artist" tabindex="1" required>
+      </div>
+      <div class="col-auto">
+        <button class="form-control, btn btn-primary" id="search-button" type="submit" tabindex="2">Search</button> 
+      </div>
+    </form>
+  </div>
+
+  <h2><img class="logo" src="{{ artist_info.0.strArtistLogo }}" alt="{{ ARTIST_NAME }}"></h2>
+
+  <div>
+    <p class="info">*For more information and album's tracks - click on the album's photo.</p>
+  </div>
+
+  <div id="albums">
+    {% for album in all_albums %}
+      <div class="album" data-result-id="1">
+        <a href="/albums/{{ album.idAlbum }}">
+        {% if album.strAlbumThumb is none or album.strAlbumThumb == ""  %}
+          <img class="album-photo" src="/static/images/no-image-icon-23500.jpg" alt="No image available">
+        {% else %}
+          <img class="album-photo" src="{{ album.strAlbumThumb }}" alt="{{ album.strAlbum }} - image">
+        {% endif %}
+        </a>
+        
+        <div class="album-details">
+          <ul> 
+            <li class="album-name">{{ album.strAlbum }}</li>
+            {% if album.intYearReleased == '0' %}
+              <li class="album-year">Year: -</li>
+            {% else %}
+              <li class="album-year">Year: {{ album.intYearReleased }}</li>
+            {% endif %}
+            {% if album.intScore is none %}
+            <li class="album-rate">Rate: -</li>
+            {% else %}
+            <li class="album-rate">Rate: {{ album.intScore }}/10</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
