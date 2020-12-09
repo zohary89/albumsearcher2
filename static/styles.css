@@ -138,6 +138,7 @@ h3 {
 
 .album-photo {
   width: 100%;
+  border-radius: 5px;
 }
 
 .album-details ul {
@@ -152,6 +153,10 @@ h3 {
   justify-content: left;
 }
 
+.like-logo {
+  flex: 1;
+}
+
 .cover-photo {
   width: 250px;
   border-radius: 10px;
@@ -162,6 +167,7 @@ h3 {
   margin-right: 3em;
   padding: 2em;
   border-radius: 10px;
+  flex: 2;
 }
 
 #album_description {
@@ -197,7 +203,7 @@ h3 {
 }
 
 .like-big-image{
-  width: 15%;
+  width: 30%;
   margin-left: 3em ;
 }
 
