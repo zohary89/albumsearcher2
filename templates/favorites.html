@@ -8,18 +8,18 @@
 <h2>{{ g.user.name }}'s Profile</h2>
 
 <div class="details">
-<h3>My details:</h3>
+<h3>My Details:</h3>
 <h4>{{ g.user.username }}</h4>
 <ul>
     <li>My name: {{ g.user.name }}</li>
     <li>Birthday: {{ g.user.birthday }}</li>
-    <li >{{ g.user.country }}</li>
+    <li >From: {{ g.user.country }}</li>
 </ul>
 </div>
 <a class='btn btn-primary' href="/update" role="button" style='font-size: small'>Edit profile</a>
 
 
-<h3 style="text-align: center; margin: 2em;">My Favorites Albums</h3>
+<h3 style="text-align: center; margin: 2em;">My Favorite Albums</h3>
 {% if not favorites %}
 <p style="text-align: center;">You haven't selected your favorite albums yet,<br>
     select an artist, click on one of his albums,

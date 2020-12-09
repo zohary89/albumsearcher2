@@ -11,6 +11,21 @@
 </div>
 
 <div class=tracks_cover>
+  <div class=like-logo>
+    {% if like %}
+    <form action="/unlike" method="post">
+      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
+      <input class="like-big-image" type="image" title="unlike" name="unlike" src="/static/images/heart.png" alt="UnLike">
+    </form> 
+    {% else %}
+    <form action="/like" method="post">
+      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
+      <input class="like-big-image" type="image" title="like" name="like" src="/static/images/unlike.png" alt="Like">
+    </form> 
+    {% endif %}
+    <p class='total-likes'>Total likes: {{ total_likes }}</p>
+  </div>
+
   <div id="album_tracks">
     <h3>Album Tracks:</h3>
     <ol>
@@ -27,21 +42,7 @@
       <img class="cover-photo" src="{{ album_info.strAlbumThumb }}" alt="album cover">
     {% endif %}
   </div> 
-  
-  <div class=like-logo>
-    {% if like %}
-    <form action="/unlike" method="post">
-      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
-      <input class="like-big-image" type="image" title="unlike" name="unlike" src="/static/images/heart.png" alt="UnLike">
-    </form> 
-    {% else %}
-    <form action="/like" method="post">
-      <input type="hidden" name="idalbum" id="idalbum" value={{ album_info.idAlbum }}>
-      <input class="like-big-image" type="image" title="like" name="like" src="/static/images/unlike.png" alt="Like">
-    </form> 
-    {% endif %}
-    <p class='total-likes'>Total likes: {{ total_likes }}</p>
-  </div>
+
 </div>
 
 <div id="album_description">
