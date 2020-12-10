@@ -1,16 +1,19 @@
-import bcrypt
-import database
 from flask import Flask, g, redirect, render_template, request, session, url_for
-import requests
 import os
+import requests
+
+import bcrypt
+import crud_actions
+from mapping import Base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
-app.secret_key = 'secret_key'
+app.secret_key = os.environ['SECRET_KEY']
 
-engine = database.create_engine(os.environ['DATABASE_URL'], echo=False)
-
-database.Base.metadata.create_all(engine)
-Session = database.sessionmaker(bind=engine)
+engine = create_engine(os.environ['DATABASE_URL'], echo=False)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
 
 
 @app.before_request
@@ -18,18 +21,18 @@ def before_request():
     g.user = None
     if 'user_id' in session:
         db_session = Session()
-        user = database.get_user_by_id(db_session, session['user_id'])
+        user = crud_actions.get_user_by_id(db_session, session['user_id'])
         g.user = user
         db_session.close()
 
 
 @app.route('/', methods=['GET'])
 def index():
-    is_valid_artist = request.args.get('valid_artist', default='true') == 'true'
     if not g.user:
         return redirect(url_for("connect_page"))
+    is_valid_artist = request.args.get('valid_artist', default='true') == 'true'
     db_session = Session()
-    top_rated_albums = database.get_top_likes_albums(db_session)
+    top_rated_albums = crud_actions.get_top_likes_albums(db_session)
     db_session.close()
     return render_template('index.html', is_valid_artist=is_valid_artist, top_rated_albums=top_rated_albums)
 
@@ -47,7 +50,7 @@ def connect():
     username = request.form["user-name"]
     password = request.form["psw"].encode('utf-8')
     db_session = Session()
-    user = database.get_user_by_username(db_session, username)
+    user = crud_actions.get_user_by_username(db_session, username)
     if user is not None and bcrypt.checkpw(password, user.password.encode('utf-8')):
         session['user_id'] = user.user_id
         db_session.close()
@@ -72,8 +75,8 @@ def register():
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     hashed = hashed.decode('utf-8')
     db_session = Session()
-    if database.get_user_by_username(db_session, username) is None:
-        database.add_user(db_session, username, hashed, name, birthday, country)
+    if crud_actions.get_user_by_username(db_session, username) is None:
+        crud_actions.add_user(db_session, username, hashed, name, birthday, country)
         db_session.close()
         return redirect(url_for("connect_page"))
     else:
@@ -91,8 +94,8 @@ def update_profile():
         birthday = request.form['birthday']
         country = request.form['country']
         db_session = Session()
-        if old_username == username or database.get_user_by_username(db_session, username) is None:
-            database.update_user(db_session, g.user.user_id, username, name, birthday, country)
+        if old_username == username or crud_actions.get_user_by_username(db_session, username) is None:
+            crud_actions.update_user(db_session, g.user.user_id, username, name, birthday, country)
             db_session.close()
             return redirect(url_for("index"))
         return redirect(url_for("update_profile", user_exist='true'))
@@ -123,29 +126,6 @@ def albums():
     )
 
 
-@app.route('/albums/<album_id>')
-def album(album_id):
-    if not g.user:
-        return redirect(url_for("connect_page"))
-    album_info = get_album_details_api(album_id)
-    if album_info is None:
-        return redirect(url_for('index'))
-    tracks_info = get_album_tracks_api(album_id)
-    like = request.args.get('like', default='false') == 'true'
-    db_session = Session()
-    if database.get_like_data(db_session, g.user.user_id, album_id):
-        like = 'true'
-    total_likes = database.get_album_likes_amount(db_session, album_id)
-    db_session.close()
-    return render_template(
-        'album.html',
-        album_info=album_info,
-        tracks_info=tracks_info, 
-        like=like,
-        total_likes=total_likes
-    )
-
-
 def get_album_details_api(album_id):
     album_resp = requests.get(f'https://theaudiodb.com/api/v1/json/1/album.php?m={album_id}') 
     album_resp_json = album_resp.json()
@@ -160,6 +140,29 @@ def get_album_tracks_api(album_id):
     return tracks_resp_json['track']
 
 
+@app.route('/albums/<album_id>')
+def album(album_id):
+    if not g.user:
+        return redirect(url_for("connect_page"))
+    album_info = get_album_details_api(album_id)
+    if album_info is None:
+        return redirect(url_for('index'))
+    tracks_info = get_album_tracks_api(album_id)
+    like = request.args.get('like', default='false') == 'true'
+    db_session = Session()
+    if crud_actions.get_like_data(db_session, g.user.user_id, album_id):
+        like = 'true'
+    total_likes = crud_actions.get_album_likes_amount(db_session, album_id)
+    db_session.close()
+    return render_template(
+        'album.html',
+        album_info=album_info,
+        tracks_info=tracks_info, 
+        like=like,
+        total_likes=total_likes
+    )
+
+
 @app.route('/like', methods=['POST'])
 def like():
     if not g.user:
@@ -172,8 +175,8 @@ def like():
     year = album_info['intYearReleased']
     rate = album_info['intScore']
     image = album_info['strAlbumThumb']
-    database.add_or_update_album(db_session, album_id, name, artist, year, rate, image)
-    database.add_like_by_ids(db_session, g.user.user_id, album_id)
+    crud_actions.add_or_update_album(db_session, album_id, name, artist, year, rate, image)
+    crud_actions.add_like_by_ids(db_session, g.user.user_id, album_id)
     db_session.close()
     return redirect(url_for('album', album_id=album_id, like="true"))
 
@@ -184,7 +187,7 @@ def unlike():
         return redirect(url_for("connect_page"))
     album_id = request.form["idalbum"]
     db_session = Session()
-    database.delete_like(db_session, g.user.user_id, album_id)
+    crud_actions.delete_like(db_session, g.user.user_id, album_id)
     return redirect(url_for('album', album_id=album_id, like="false"))
 
 
@@ -193,8 +196,8 @@ def favorites():
     if not g.user:
         return redirect(url_for("connect_page"))
     db_session = Session()
-    favorites = database.get_likes_albums_by_user_id(db_session, g.user.user_id)
-    likes_amount = database.get_likes_per_user(db_session, g.user.user_id)
+    favorites = crud_actions.get_likes_albums_by_user_id(db_session, g.user.user_id)
+    likes_amount = crud_actions.get_likes_per_user(db_session, g.user.user_id)
     db_session.close()
     return render_template('favorites.html', favorites=favorites, likes=likes_amount)
 
