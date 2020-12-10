@@ -138,7 +138,7 @@ h3 {
 
 .album-photo {
   width: 100%;
-  border-radius: 5px;
+  border-radius: 7px;
 }
 
 .album-details ul {
@@ -181,7 +181,7 @@ h3 {
   margin-top: 1em;
 }
 
-.regist-info, .login{
+.regist-info, .login, .login-info{
   text-align: center;
   margin-top: 2em;
 }
