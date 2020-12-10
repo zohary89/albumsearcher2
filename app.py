@@ -1,10 +1,10 @@
-from flask import Flask, g, redirect, render_template, request, session, url_for
 import os
-import requests
 
 import bcrypt
 import crud_actions
+from flask import Flask, g, redirect, render_template, request, session, url_for
 from mapping import Base
+import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

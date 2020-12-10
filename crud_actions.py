@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import desc, func
 from mapping import Album, Like, User 
+from sqlalchemy import desc, func
 
 
 def add_user(session, username, password, name, birthday, country):
@@ -35,8 +35,9 @@ def get_album_by_album_id(session, album_id):
 
 def add_or_update_album(session, album_id, album_name, artist, year, rate, image_path):
     existing_album = get_album_by_album_id(session, album_id)
-    if (existing_album == None):
-        album = Album(album_id=album_id, album_name=album_name, artist=artist, year=year, rate=rate, image_path=image_path)
+    if existing_album is None:
+        album = Album(
+            album_id=album_id, album_name=album_name, artist=artist, year=year, rate=rate, image_path=image_path)
         session.add(album)
     else:
         existing_album.rate = rate
@@ -51,8 +52,10 @@ def add_like_by_ids(session, user_id, album_id):
 
 
 def get_like_data(session, user_id, album_id):
-    return session.query(Like).filter(Like.album_id == album_id).\
-        filter(Like.user_id == user_id).first()
+    return (
+        session.query(Like).filter(Like.album_id == album_id)
+        .filter(Like.user_id == user_id).first()
+    )
 
 
 def delete_like(session, user_id, album_id):
@@ -62,9 +65,11 @@ def delete_like(session, user_id, album_id):
 
 
 def get_likes_albums_by_user_id(session, user_id):
-    return session.query(Album).join(Like).join(User).\
-        filter(User.user_id == user_id).\
-        order_by(desc(Like.like_time)).all()
+    return (
+        session.query(Album).join(Like).join(User)
+        .filter(User.user_id == user_id)
+        .order_by(desc(Like.like_time)).all()
+    )
 
 
 def get_likes_per_user(session, user_id):
@@ -77,6 +82,9 @@ def get_album_likes_amount(session, album_id):
 
 
 def get_top_likes_albums(session):
-    return session.query(Album, func.count(Like.user_id)).\
-        join(Like).group_by(Album).\
-        order_by(desc(func.count(Like.user_id)))[:10]
+    return (
+        session.query(Album, func.count(Like.user_id))
+        .join(Like).group_by(Album)
+        .order_by(desc(func.count(Like.user_id)))[:10]
+    )
+
